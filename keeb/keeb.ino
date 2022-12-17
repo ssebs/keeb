@@ -8,7 +8,10 @@
 #define DEBOUNCE 2
 #define SCAN_DELAY 200
 
-enum switchMode { NUMPAD = 0, VAL = 1, HELPER = 2, _NUM_MODES = 3};
+enum switchMode { NUMPAD = 0,
+                  VAL = 1,
+                  HELPER = 2,
+                  _NUM_MODES = 3 };
 
 static const uint8_t ColPins[NUM_COLS] = { 6, 5, 4 };
 static const uint8_t RowPins[NUM_ROWS] = { 3, 2, 1 };
@@ -39,6 +42,7 @@ const char *valPickupStrings[5] = {
 static uint8_t currentRow = 0;
 static uint8_t currentCol;  // for column loop counters
 static uint8_t currentMode;
+static char pressedKey;
 
 bool lightOn = false;
 
@@ -67,10 +71,10 @@ void setup() {
 void loop() {
   // Serial.print("Switch Mode: ");
   // Serial.println(currentMode);
-  
+
   // Mode switch
   if (digitalRead(MODE_SW_PIN) == LOW) {
-    if (currentMode >= _NUM_MODES - 1 ) {
+    if (currentMode >= _NUM_MODES - 1) {
       currentMode = NUMPAD;
     } else {
       currentMode += 1;
@@ -87,33 +91,58 @@ void loop() {
 
   switch (currentMode) {
     case NUMPAD:
-      handleNumPad();
+      _handleInput(&handleNumPad);
       break;
     case VAL:
-      handleVal();
+      _handleInput(&handleVal);
       break;
     case HELPER:
-      handleHelper();
+      _handleInput(handleHelper);
       break;
     default:
       Serial.println("default mode, how'd you get here?");
-      break;      
+      break;
   }
 
   // sendRandomString(valStrings, sizeof(valStrings) / sizeof(valStrings[0]));
 }
 
-void handleHelper() {
-  Serial.println("IN HANDLE HELPER");
+// Input functions
+void handleHelper(bool isDown) {
+  if (isDown) {
+    switch (pressedKey) {
+      case '1':
+        Keyboard.println("gg");
+        break;
+      case '2':
+        sendRandomString(valPickupStrings, sizeof(valPickupStrings) / sizeof(valPickupStrings[0]));
+        break;
+      case '3':
+        sendOpenIncognito();
+        break;
+      case '4':
+        sendUndo();
+        break;
+      default:
+        Keyboard.println("Other keys!");
+    }
+  }
 }
 
-void handleVal() {
-  Serial.println("IN HANDLE VAL");
+void handleVal(bool isDown) {
+  if (isDown) {
+    sendValString();
+  }
 }
 
-void handleNumPad() {
-  // TODO: pass function to this
+void handleNumPad(bool isDown) {
+  if (isDown) {
+    Keyboard.print(pressedKey);
+  } else {
+  }
+}
 
+void _handleInput(void (*funcPtr)(bool)) {
   // Select current row
   digitalWrite(RowPins[currentRow], LOW);
   // add a slight delay
@@ -127,8 +156,9 @@ void handleNumPad() {
         // If debounce counter hits MAX_DEBOUNCE, trigger key press
         if (debounce_count[currentRow][currentCol] == DEBOUNCE) {
 
-          // Do stuff
-          Keyboard.press(keyData[pos]);
+          // Key press
+          pressedKey = keyData[pos];
+          funcPtr(true);
         }
       }
     } else  // Otherwise, button is released
@@ -139,7 +169,8 @@ void handleNumPad() {
         if (debounce_count[currentRow][currentCol] == 0) {  // If debounce counter hits 0
 
           // Release key press
-          Keyboard.release(keyData[pos]);
+          pressedKey = keyData[pos];
+          funcPtr(false);
         }
       }
     }
@@ -153,6 +184,8 @@ void handleNumPad() {
   if (currentRow == 0) pos = 0;
 }
 
+
+// Macro functions
 void sendValString() {
   Keyboard.press(KEY_LEFT_SHIFT);
   Keyboard.press(KEY_RETURN);
