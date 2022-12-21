@@ -47,7 +47,10 @@ static char pressedKey;
 bool lightOn = false;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(2000000);  // use the same baud-rate as the python side
+  while (!Serial && millis() < 1000) {}
+
+  Serial.println("Starting Macro Pad...");
 
   // Setup row pins
   uint8_t i;
@@ -66,12 +69,10 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
 
   currentMode = NUMPAD;
+  Keyboard.begin();
 }
 
 void loop() {
-  // Serial.print("Switch Mode: ");
-  // Serial.println(currentMode);
-
   // Mode switch
   if (digitalRead(MODE_SW_PIN) == LOW) {
     if (currentMode >= _NUM_MODES - 1) {
@@ -86,6 +87,8 @@ void loop() {
       digitalWrite(LED_BUILTIN, HIGH);
       lightOn = !lightOn;
     }
+    Serial.print("mode:");
+    Serial.println(currentMode);
     delay(100);
   }
 
