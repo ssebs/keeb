@@ -89,7 +89,7 @@ void loop() {
     }
     Serial.print("mode:");
     Serial.println(currentMode);
-    delay(100);
+    delay(500);
   }
 
   switch (currentMode) {
@@ -115,6 +115,10 @@ void handleHelper(bool isDown) {
   if (isDown) {
     switch (pressedKey) {
       case '1':
+        Keyboard.press(KEY_LEFT_SHIFT);
+        Keyboard.press(KEY_RETURN);
+        delay(500);
+        Keyboard.releaseAll();
         Keyboard.println("gg");
         break;
       case '2':
@@ -192,7 +196,7 @@ void _handleInput(void (*funcPtr)(bool)) {
 void sendValString() {
   Keyboard.press(KEY_LEFT_SHIFT);
   Keyboard.press(KEY_RETURN);
-  delay(100);
+  delay(500);
   Keyboard.releaseAll();
 
   sendRandomString(valStrings, sizeof(valStrings) / sizeof(valStrings[0]));
@@ -208,7 +212,7 @@ void sendRandomString(const char **strings, int numStrings) {
 void sendShutdown() {
   Keyboard.press(KEY_LEFT_GUI);
   Keyboard.press('r');
-  delay(100);
+  delay(500);
   Keyboard.releaseAll();
 
   // Keyboard.println("shutdown /s");
@@ -218,19 +222,19 @@ void sendShutdown() {
 void sendOpenIncognito() {
   Keyboard.press(KEY_LEFT_GUI);
   Keyboard.press('1');
-  delay(200);
+  delay(500);
   Keyboard.releaseAll();
 
   Keyboard.press(KEY_LEFT_CTRL);
   Keyboard.press(KEY_LEFT_SHIFT);
   Keyboard.press('n');
-  delay(100);
+  delay(500);
   Keyboard.releaseAll();
 }
 
 void sendUndo() {
   Keyboard.press(KEY_LEFT_CTRL);
   Keyboard.press('z');
-  delay(100);
+  delay(500);
   Keyboard.releaseAll();
 }

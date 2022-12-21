@@ -30,7 +30,7 @@ def main():
         if data.startswith("mode:"):
             mode = int(data.split(":")[1].strip())
             print(switchMode(mode).name)
-            toast.show_toast("Keyboard mode:", switchMode(mode).name, duration=5)
+            toast.show_toast("Keyboard mode:", switchMode(mode).name, duration=2, icon_path='')
 
 
 def load_port(name: str) -> str:
