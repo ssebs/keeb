@@ -14,11 +14,12 @@ from util import switchMode
 DEBUG = False
 
 def main():
-    print("Client")
+    print("Client for macro pad")
     signal.signal(signal.SIGINT, signal.default_int_handler)
     serial_port = load_port("COM6")
-
     arduino = serial.Serial(port=serial_port, baudrate=2000000,  timeout=.5)
+    toast = ToastNotifier()
+
     if arduino is None:
         print("Failed to mount COM6")
 
@@ -29,6 +30,7 @@ def main():
         if data.startswith("mode:"):
             mode = int(data.split(":")[1].strip())
             print(switchMode(mode).name)
+            toast.show_toast("Keyboard mode:", switchMode(mode).name, duration=5)
 
 
 def load_port(name: str) -> str:
