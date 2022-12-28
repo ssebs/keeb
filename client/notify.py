@@ -4,6 +4,7 @@
 import time
 import signal
 import sys
+import threading
 
 import serial
 import serial.tools.list_ports
@@ -16,6 +17,8 @@ from tkinter import Tk
 DEBUG = True
 SECOND_MONITOR = True
 
+ICON_PATH = './img/bell.ico'
+
 
 def main():
     print("Client for macro pad")
@@ -25,7 +28,9 @@ def main():
     toast = ToastNotifier()
 
     root = Tk()
-    macro_display = MacroDisplay(root)
+    root.iconbitmap(ICON_PATH)
+
+    macro_display = MacroDisplay(root, "VAL")
     posX = None
     posY = None
 
@@ -39,23 +44,32 @@ def main():
     else:
         posX = int(root.winfo_screenwidth() / 2)
         posY = int(root.winfo_screenheight() / 2)
-    root.geometry(f"256x256+{posX}+{posY}")
-    
+    root.geometry(f"456x300+{posX}+{posY}")
+
+    thread1 = threading.Thread(target=main_loop, args=(arduino, root, macro_display, toast))
+    thread1.start()
+
     root.mainloop()
 
+
+def main_loop(arduino, root, macro_display, toast):
     while True:
         data = str(arduino.readline().decode())
         if data != "" and DEBUG:
             print(data)
+
         if data.startswith("key:"):
             keyPressed = int(data.split(":")[1].strip())
             print(f"Key pressed: {keyPressed}")
+
         if data.startswith("mode:"):
             # main()
             mode = int(data.split(":")[1].strip())
             print(switchMode(mode).name)
+            macro_display.update_mode(switchMode(mode).name)
             toast.show_toast("Keyboard mode:", switchMode(
-                mode).name, duration=2, icon_path='')
+                mode).name, duration=2, icon_path=ICON_PATH)
+
         if data.startswith("log:"):
             print(data)
 
