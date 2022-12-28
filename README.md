@@ -37,6 +37,12 @@ A python GUI that shows what mode you're in and what the buttons do. Data is sou
     - `pip install -r requirements.txt`
 
 ### Building the .exe
-- `pyinstaller -c -F client/notify.py`
+- `cd client/`
+- `pyinstaller notify.spec`
     - Built file is under `./dist/`
 
+
+## TODO:
+- [ ] OOP
+- [ ] Add log output in GUI
+- [ ] Cleanup GUI
