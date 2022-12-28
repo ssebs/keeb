@@ -39,18 +39,22 @@ def main():
     else:
         posX = int(root.winfo_screenwidth() / 2)
         posY = int(root.winfo_screenheight() / 2)
+    
     root.geometry(f"+{posX}+{posY}")
 
-    frm = ttk.Frame(root, padding=10)
-    frm.grid()
-    ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
-    ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
+    # frm = ttk.Frame(root, padding=10)
+    # frm.grid()
+    # ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
+    # ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
     # root.mainloop()
 
     while True:
         data = str(arduino.readline().decode())
         if data != "" and DEBUG:
             print(data)
+        if data.startswith("key:"):
+            keyPressed = int(data.split(":")[1].strip())
+            print(f"Key pressed: {keyPressed}")
         if data.startswith("mode:"):
             # main()
             mode = int(data.split(":")[1].strip())

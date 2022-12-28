@@ -116,6 +116,8 @@ void loop() {
 // Input functions
 void handleHelper(bool isDown) {
   if (isDown) {
+    _logKeyPressed();
+
     switch (pressedKey) {
       case '1':
         Keyboard.press(KEY_LEFT_SHIFT);
@@ -154,16 +156,51 @@ void handleHelper(bool isDown) {
 
 void handleVal(bool isDown) {
   if (isDown) {
-    Serial.print("log:valstringsize - ");
-    Serial.println((int)sizeof(valStrings) / sizeof(valStrings[0]));
-
-    // Count valStrPos up 1 or reset
-    if (valStrPos < (int)sizeof(valStrings) / sizeof(valStrings[0]) - 1) {
-      valStrPos += 1;
-    } else {
-      valStrPos = 0;
+    _logKeyPressed();
+    
+    switch (pressedKey) {
+      case '1':
+        // Count valStrPos up 1 or reset
+        if (valStrPos > 0) {
+          valStrPos -= 1;
+        } else {
+          valStrPos = 10;
+        }
+        _sendValString(valStrings[valStrPos]);
+        break;
+      case '2':
+        sendRandomString(valPickupStrings, sizeof(valPickupStrings) / sizeof(valPickupStrings[0]));
+        break;
+      case '3':
+        // Count valStrPos up 1 or reset
+        if (valStrPos < (int)sizeof(valStrings) / sizeof(valStrings[0]) - 1) {
+          valStrPos += 1;
+        } else {
+          valStrPos = 0;
+        }
+        _sendValString(valStrings[valStrPos]);
+        break;
+      case '4':
+        _sendValString("gg");
+        break;
+      case '5':
+        _sendValString("gg");
+        break;
+      case '6':
+        _sendValString("gg");
+        break;
+      case '7':
+        _sendValString("gg");
+        break;
+      case '8':
+        _sendValString("gg");
+        break;
+      case '9':
+        _sendValString("gg");
+        break;
     }
-    sendValString();
+    
+    
 
     Serial.print("log:");
     Serial.println(valStrPos);
@@ -172,6 +209,7 @@ void handleVal(bool isDown) {
 
 void handleNumPad(bool isDown) {
   if (isDown) {
+    _logKeyPressed();
     Keyboard.print(pressedKey);
   } else {
   }
@@ -219,9 +257,13 @@ void _handleInput(void (*funcPtr)(bool)) {
   if (currentRow == 0) pos = 0;
 }
 
+void _logKeyPressed() {
+  Serial.print("key:");
+  Serial.println(pressedKey);
+}
 
 // Macro functions
-void sendValString() {
+void _sendValString(const char* str) {
   // Get into all chat
   Keyboard.press(KEY_LEFT_SHIFT);
   Keyboard.press(KEY_RETURN);
@@ -230,7 +272,7 @@ void sendValString() {
   delay(100);
 
   // Send text
-  Keyboard.println(valStrings[valStrPos]);
+  Keyboard.println(str);
   delay(250);
 
   // sendRandomString(valStrings, sizeof(valStrings) / sizeof(valStrings[0]));
