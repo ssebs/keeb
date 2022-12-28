@@ -184,19 +184,19 @@ void handleVal(bool isDown) {
         _sendValString("gg");
         break;
       case '5':
-        _sendValString("gg");
+        _sendValString("ggwp");
         break;
       case '6':
-        _sendValString("gg");
+        _sendValString("ggez");
         break;
       case '7':
-        _sendValString("gg");
+        _sendValString("nt");
         break;
       case '8':
-        _sendValString("gg");
+        _sendValString("ntnt");
         break;
       case '9':
-        _sendValString("gg");
+        _sendValString("?");
         break;
     }
     

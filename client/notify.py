@@ -9,10 +9,9 @@ import serial
 import serial.tools.list_ports
 from win10toast import ToastNotifier
 
-from util import switchMode
-from displaymacros import main
-from tkinter import *
-from tkinter import ttk
+from util import switchMode, MACRO_ITEMS
+from macrodisplay import MacroDisplay
+from tkinter import Tk
 
 DEBUG = True
 SECOND_MONITOR = True
@@ -26,6 +25,7 @@ def main():
     toast = ToastNotifier()
 
     root = Tk()
+    macro_display = MacroDisplay(root)
     posX = None
     posY = None
 
@@ -39,14 +39,9 @@ def main():
     else:
         posX = int(root.winfo_screenwidth() / 2)
         posY = int(root.winfo_screenheight() / 2)
+    root.geometry(f"256x256+{posX}+{posY}")
     
-    root.geometry(f"+{posX}+{posY}")
-
-    # frm = ttk.Frame(root, padding=10)
-    # frm.grid()
-    # ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
-    # ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
-    # root.mainloop()
+    root.mainloop()
 
     while True:
         data = str(arduino.readline().decode())

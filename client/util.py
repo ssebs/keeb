@@ -76,15 +76,15 @@ MACRO_ITEMS = {
         },
         {
             "pos": 7,
-            "text": ""
+            "text": "nt"
         },
         {
             "pos": 8,
-            "text": ""
+            "text": "ntnt"
         },
         {
             "pos": 9,
-            "text": ""
+            "text": "?"
         },
     ],
     "HELPER": [
