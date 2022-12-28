@@ -23,7 +23,7 @@ SERIAL_QRY = "USB Serial Device"
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)) + "\\res")
     return os.path.join(base_path, relative_path)
 
 
@@ -88,6 +88,7 @@ def init_gui() -> MacroDisplay:
     root.protocol("WM_DELETE_WINDOW", handle_close)
     root.iconbitmap(resource_path(ICON_PATH))
     root.resizable(False, False)
+    root.title("Keeb")
 
     posX = None
     posY = None
