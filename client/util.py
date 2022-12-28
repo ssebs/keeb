@@ -90,6 +90,44 @@ MACRO_ITEMS = {
     "HELPER": [
         {
             "pos": 1,
+            "text": "gg"
+        },
+        {
+            "pos": 2,
+            "text": "val pickup line"
+        },
+        {
+            "pos": 3,
+            "text": "incognito"
+        },
+        {
+            "pos": 4,
+            "text": "undo"
+        },
+        {
+            "pos": 5,
+            "text": "gta heal"
+        },
+        {
+            "pos": 6,
+            "text": ""
+        },
+        {
+            "pos": 7,
+            "text": ""
+        },
+        {
+            "pos": 8,
+            "text": ""
+        },
+        {
+            "pos": 9,
+            "text": ""
+        },
+    ],
+    "MODE": [
+        {
+            "pos": 1,
             "text": "1"
         },
         {

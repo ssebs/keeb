@@ -40,6 +40,7 @@ const char *valPickupStrings[5] = {
   "You must be be Reyna, because you are sucking more than just my soul.",
 };
 
+static unsigned long lastMillis;  // for 1 second counter
 static uint8_t currentRow = 0;
 static uint8_t currentCol;  // for column loop counters
 static uint8_t currentMode;
@@ -95,6 +96,7 @@ void loop() {
     delay(500);
   }
 
+  // Handle input depending on mode
   switch (currentMode) {
     case NUMPAD:
       _handleInput(&handleNumPad);
@@ -108,6 +110,14 @@ void loop() {
     default:
       Serial.println("default mode, how'd you get here?");
       break;
+  }
+
+  // Every second...
+  // 2 * 60 * 1000UL = 2 mins
+  if (millis() - lastMillis >= 1000UL) {
+    lastMillis = millis();  //get ready for the next iteration
+    Serial.print("secmode:");
+    Serial.println(currentMode);
   }
 
   // sendRandomString(valStrings, sizeof(valStrings) / sizeof(valStrings[0]));
@@ -157,7 +167,7 @@ void handleHelper(bool isDown) {
 void handleVal(bool isDown) {
   if (isDown) {
     _logKeyPressed();
-    
+
     switch (pressedKey) {
       case '1':
         // Count valStrPos up 1 or reset
@@ -199,8 +209,8 @@ void handleVal(bool isDown) {
         _sendValString("?");
         break;
     }
-    
-    
+
+
 
     Serial.print("log:");
     Serial.println(valStrPos);
@@ -263,7 +273,7 @@ void _logKeyPressed() {
 }
 
 // Macro functions
-void _sendValString(const char* str) {
+void _sendValString(const char *str) {
   // Get into all chat
   Keyboard.press(KEY_LEFT_SHIFT);
   Keyboard.press(KEY_RETURN);

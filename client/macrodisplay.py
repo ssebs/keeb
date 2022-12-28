@@ -16,7 +16,7 @@ class MacroDisplay(ttk.Frame):
         """
         super().__init__(container, **options)
         self.container = container
-        self.mode = mode
+        self.mode = StringVar(value=mode)
         
         s = ttk.Style()
         s.configure('.', font=('Ubuntu-Mono', 16), relief='flat')
@@ -24,24 +24,24 @@ class MacroDisplay(ttk.Frame):
         self.grid(row=4, column=3)
         self.size = {"x": 3, "y": 4}
 
-        # ttk.Label(container, text="Hello World!").grid(column=0, row=0)
-        # ttk.Button(container, text="Quit", command=container.destroy).grid(column=1, row=0)
-
-        grid = self._init_grid()
-        self.lbl = ttk.Label(self.container, text=self.mode)
+        self.macrogrid = self._init_grid()
+        self.lbl = ttk.Label(self.container, textvariable=self.mode)
         self.lbl.grid(row=0, column=0, padx=5, pady=10)
 
-    def update_mode(self, modeTxt: str):
-        self.mode = modeTxt
-        self.lbl.text = modeTxt
+    def update_mode(self, modeTxt: str, is_auto: bool = False, verbose: bool = False):
+        self.mode.set(modeTxt)
+        self.macrogrid = None
+        self.macrogrid = self._init_grid()
+        if verbose:
+            print(f"Updating mode! {modeTxt}")
 
-    def _init_grid(self) -> dict:
+    def _init_grid(self, verbose: bool = False) -> dict:
         grid = {}
         r = self.size["y"]
         c = 0
-        for item in MACRO_ITEMS["VAL"]:
-
-            print(f"{item['text']} - r: {r}, c: {c}")
+        for item in MACRO_ITEMS[self.mode.get()]:
+            if verbose:
+                print(f"{item['text']} - r: {r}, c: {c}")
             # plus 1 b/c we're starting on 1,1
             grid[item["pos"]] = ttk.Button(self.container, text=item["text"])
             grid[item["pos"]].grid(row=r, column=c, ipadx=0, ipady=15, padx=5, pady=10)

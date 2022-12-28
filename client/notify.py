@@ -19,23 +19,26 @@ SECOND_MONITOR = True
 
 ICON_PATH = './img/bell.ico'
 
-
 def main():
     print("Client for macro pad")
     signal.signal(signal.SIGINT, signal.default_int_handler)
     serial_port = load_port("COM7")
     arduino = serial.Serial(port=serial_port, baudrate=9600,  timeout=1.2)
+    if arduino is None:
+        print("Failed to mount COM7")
     toast = ToastNotifier()
 
+    global root
     root = Tk()
+    macro_display = MacroDisplay(root, "MODE")
+    
+
+    root.protocol("WM_DELETE_WINDOW", handle_close)
     root.iconbitmap(ICON_PATH)
 
-    macro_display = MacroDisplay(root, "VAL")
     posX = None
     posY = None
 
-    if arduino is None:
-        print("Failed to mount COM7")
 
     # GUI stuff
     if SECOND_MONITOR:
@@ -46,6 +49,7 @@ def main():
         posY = int(root.winfo_screenheight() / 2)
     root.geometry(f"456x300+{posX}+{posY}")
 
+    global thread1 
     thread1 = threading.Thread(target=main_loop, args=(arduino, root, macro_display, toast))
     thread1.start()
 
@@ -62,10 +66,13 @@ def main_loop(arduino, root, macro_display, toast):
             keyPressed = int(data.split(":")[1].strip())
             print(f"Key pressed: {keyPressed}")
 
-        if data.startswith("mode:"):
-            # main()
+        if data.startswith("secmode:"):
             mode = int(data.split(":")[1].strip())
-            print(switchMode(mode).name)
+            # print(switchMode(mode).name)
+            macro_display.update_mode(switchMode(mode).name, is_auto=True)
+        if data.startswith("mode:"):
+            mode = int(data.split(":")[1].strip())
+            # print(switchMode(mode).name)
             macro_display.update_mode(switchMode(mode).name)
             toast.show_toast("Keyboard mode:", switchMode(
                 mode).name, duration=2, icon_path=ICON_PATH)
@@ -85,6 +92,17 @@ def load_port(name: str) -> str:
             return p.name
     return None
 
+
+def handle_close():
+    if thread1 is not None:
+        root.destroy()
+        thread1.join()
+        exit(0)
+    else:
+        print("thread is none")
+        root.destroy()
+        exit(0)
+    # stop thread1
 
 if __name__ == "__main__":
     main()
