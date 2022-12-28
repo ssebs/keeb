@@ -6,7 +6,7 @@
 #define MODE_SW_PIN 8
 
 #define DEBOUNCE 2
-#define SCAN_DELAY 200
+#define SCAN_DELAY 300
 
 enum switchMode { NUMPAD = 0,
                   VAL = 1,
@@ -19,7 +19,7 @@ static uint8_t debounce_count[NUM_ROWS][NUM_COLS];
 uint8_t pos = 0;
 
 const char keyData[9] = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-const char *valStrings[10] = {
+const char *valStrings[11] = {
   "Sheeeeeeeeeeeeeeeeeeeeeeeeesh",
   "You were a boulder. I am a mountain!",
   "How did every piece of trash end up on the same team?",
@@ -29,7 +29,8 @@ const char *valStrings[10] = {
   "I am on a higher plane, chale, literally!",
   "Activating kill mode. That's a joke. Kill mode is default.",
   "Buy stuff, kaching, lil' skkkrrrr, then we're done, yeah?",
-  "Yo!    Nice."
+  "Yo!    Nice.",
+  "Sheee-achoo!-eeesh!",
 };
 const char *valPickupStrings[5] = {
   "Are you Cypher? Because I'd give you my corpse.",
@@ -43,6 +44,8 @@ static uint8_t currentRow = 0;
 static uint8_t currentCol;  // for column loop counters
 static uint8_t currentMode;
 static char pressedKey;
+static uint8_t valStrPos = 11;
+// static uint8_t valPUStrPos = 0;
 
 bool lightOn = false;
 
@@ -50,7 +53,7 @@ void setup() {
   Serial.begin(9600);  // use the same baud-rate as the python side
   while (!Serial && millis() < 1000) {}
 
-  Serial.println("Starting Macro Pad...");
+  Serial.println("log:Starting Macro Pad...");
 
   // Setup row pins
   uint8_t i;
@@ -151,7 +154,19 @@ void handleHelper(bool isDown) {
 
 void handleVal(bool isDown) {
   if (isDown) {
+    Serial.print("log:valstringsize - ");
+    Serial.println((int)sizeof(valStrings) / sizeof(valStrings[0]));
+
+    // Count valStrPos up 1 or reset
+    if (valStrPos < (int)sizeof(valStrings) / sizeof(valStrings[0]) - 1) {
+      valStrPos += 1;
+    } else {
+      valStrPos = 0;
+    }
     sendValString();
+
+    Serial.print("log:");
+    Serial.println(valStrPos);
   }
 }
 
@@ -207,12 +222,18 @@ void _handleInput(void (*funcPtr)(bool)) {
 
 // Macro functions
 void sendValString() {
+  // Get into all chat
   Keyboard.press(KEY_LEFT_SHIFT);
   Keyboard.press(KEY_RETURN);
-  delay(500);
+  delay(250);
   Keyboard.releaseAll();
+  delay(100);
 
-  sendRandomString(valStrings, sizeof(valStrings) / sizeof(valStrings[0]));
+  // Send text
+  Keyboard.println(valStrings[valStrPos]);
+  delay(250);
+
+  // sendRandomString(valStrings, sizeof(valStrings) / sizeof(valStrings[0]));
 }
 
 void sendRandomString(const char **strings, int numStrings) {

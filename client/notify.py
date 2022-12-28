@@ -45,7 +45,7 @@ def main():
     frm.grid()
     ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
     ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
-    root.mainloop()
+    # root.mainloop()
 
     while True:
         data = str(arduino.readline().decode())
@@ -53,11 +53,12 @@ def main():
             print(data)
         if data.startswith("mode:"):
             # main()
-
             mode = int(data.split(":")[1].strip())
             print(switchMode(mode).name)
             toast.show_toast("Keyboard mode:", switchMode(
                 mode).name, duration=2, icon_path='')
+        if data.startswith("log:"):
+            print(data)
 
 
 def load_port(name: str) -> str:
