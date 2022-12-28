@@ -4,6 +4,7 @@
 import time
 import signal
 import sys
+import os
 import threading
 
 import serial
@@ -16,9 +17,14 @@ from tkinter import Tk
 
 DEBUG = False
 SECOND_MONITOR = False
-ICON_PATH = './client/res/bell.ico'
-SFX_PATH = './client/res/snap.mp3'
+ICON_PATH = 'bell.ico'
+SFX_PATH = 'snap.mp3'
 SERIAL_QRY = "USB Serial Device"
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
 
 
 def main():
@@ -34,7 +40,7 @@ def main():
         macro_display = init_gui() # sets global root, returns MacroDisplay
     except Exception as e:
         print(e)
-        exit(1)
+        sys.exit(1)
 
     # Setup Serial comm thread
     global thread1 
@@ -80,7 +86,7 @@ def init_gui() -> MacroDisplay:
     macro_display = MacroDisplay(root, "MODE")
     
     root.protocol("WM_DELETE_WINDOW", handle_close)
-    root.iconbitmap(ICON_PATH)
+    root.iconbitmap(resource_path(ICON_PATH))
     root.resizable(False, False)
 
     posX = None
@@ -117,7 +123,7 @@ def main_loop(arduino, root, macro_display):
         if data.startswith("mode:"):
             mode = int(data.split(":")[1].strip())
             macro_display.update_mode(switchMode(mode).name, verbose=True)
-            playsound(SFX_PATH, False)
+            playsound(resource_path(SFX_PATH), False)
 
         if data.startswith("log:"):
             print(data)
@@ -160,11 +166,11 @@ def handle_close():
     if thread1 is not None:
         do_close = True
         root.destroy()
-        exit(0)
+        sys.exit(0)
     else:
         print("thread is none")
         root.destroy()
-        exit(0)
+        sys.exit(0)
     # stop thread1
 # end handle_close
 

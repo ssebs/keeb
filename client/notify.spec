@@ -7,8 +7,8 @@ block_cipher = None
 a = Analysis(
     ['notify.py'],
     pathex=[],
-    binaries=[],
-    datas=[],
+    binaries=[('.\\res\\*', '.')],
+    datas=[('.\\res\\*', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -41,4 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['.\\res\\bell.ico'],
 )
