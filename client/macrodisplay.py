@@ -8,6 +8,12 @@ from util import MACRO_ITEMS
 class MacroDisplay(ttk.Frame):
     """
     TK Frame class for the Macro Display
+    Params:
+        container - Tk root container
+        mode - str mode to cross reference against MACRO_ITEMS
+        **options - other options to be passed to tk
+    Methods:
+        update_mode - update the mode and rebuild grid with new data. Cross references MACRO_ITEMS
     """
 
     def __init__(self, container: Tk, mode: str, **options):
@@ -27,15 +33,30 @@ class MacroDisplay(ttk.Frame):
         self.macrogrid = self._init_grid()
         self.lbl = ttk.Label(self.container, textvariable=self.mode)
         self.lbl.grid(row=0, column=0, padx=5, pady=10)
+    # end __init__
 
-    def update_mode(self, modeTxt: str, is_auto: bool = False, verbose: bool = False):
+    def update_mode(self, modeTxt: str, verbose: bool = False):
+        """
+        Updates the mode and reloads the grid depending on the modeTxt. Cross references MACRO_ITEMS
+        Params:
+            modeTxt - str the name of the mode (e.g. NUMPAD, VAL, HELPER)
+            verbose - bool [False] add verbosity
+        """
         self.mode.set(modeTxt)
         self.macrogrid = None
         self.macrogrid = self._init_grid()
         if verbose:
             print(f"Updating mode! {modeTxt}")
+    # end update_mode
 
     def _init_grid(self, verbose: bool = False) -> dict:
+        """
+        Initializes the grid using self.mode's value cross referenced with MACRO_ITEMS' items
+        Params:
+            verbose - bool [False] add verbosity
+        Returns:
+            dict of ttk grid buttons
+        """
         grid = {}
         r = self.size["y"]
         c = 0
@@ -54,3 +75,4 @@ class MacroDisplay(ttk.Frame):
             else:
                 c += 1
         return grid
+    # end _init_grid
