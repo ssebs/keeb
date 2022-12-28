@@ -47,7 +47,7 @@ static char pressedKey;
 bool lightOn = false;
 
 void setup() {
-  Serial.begin(2000000);  // use the same baud-rate as the python side
+  Serial.begin(9600);  // use the same baud-rate as the python side
   while (!Serial && millis() < 1000) {}
 
   Serial.println("Starting Macro Pad...");
@@ -129,6 +129,19 @@ void handleHelper(bool isDown) {
         break;
       case '4':
         sendUndo();
+        break;
+      case '5':
+        Keyboard.press(KEY_TAB);
+        delay(500);
+        Keyboard.press('c');
+        delay(50);
+        Keyboard.press('c');
+        delay(50);
+        Keyboard.press('c');
+        delay(100);
+        Keyboard.press('v');
+        delay(100);
+        Keyboard.releaseAll();
         break;
       default:
         Keyboard.println("Other keys!");
