@@ -49,11 +49,12 @@ class MacroDisplay(ttk.Frame):
             modeTxt - str the name of the mode (e.g. NUMPAD, VAL, HELPER)
             verbose - bool [False] add verbosity
         """
-        self.mode.set(modeTxt)
-        self.macrogrid = None
-        self.macrogrid = self._init_grid()
-        if verbose:
-            print(f"Updating mode! {modeTxt}")
+        if self.mode.get() != modeTxt:
+            self.mode.set(modeTxt)
+            self.macrogrid = None
+            self.macrogrid = self._init_grid()
+            if verbose:
+                print(f"Updating mode! {modeTxt}")
     # end update_mode
 
     def update_status(self, position: int, verbose: bool = False):
@@ -85,7 +86,7 @@ class MacroDisplay(ttk.Frame):
                 self.last_txt.set(VAL_STRINGS[last_pos])
 
             if verbose:
-                print(f"Updating status! {VAL_STRINGS[position]}")
+                print(f"Updating status - {VAL_STRINGS[position]}")
         else:
             if verbose:
                 print("No change needed to status")
@@ -101,6 +102,7 @@ class MacroDisplay(ttk.Frame):
         Returns:
             dict of ttk grid buttons
         """
+        # TODO: use self.grid instead...
         grid = {}
         r = self.size["y"]
         c = 0
