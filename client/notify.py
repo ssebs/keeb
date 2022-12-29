@@ -16,7 +16,7 @@ from macrodisplay import MacroDisplay
 from tkinter import Tk
 
 DEBUG = False
-SECOND_MONITOR = False
+SECOND_MONITOR = True
 ICON_PATH = 'bell.ico'
 SFX_PATH = 'snap.mp3'
 SERIAL_QRY = "USB Serial Device"
@@ -44,13 +44,13 @@ def main():
 
     # Setup Serial comm thread
     global thread1 
-    thread1 = threading.Thread(target=main_loop, args=(arduino, root, macro_display), daemon=True)
-    thread1.start()
-    
     # For the close icon in the GUI, stop the thread too
     global do_close
     do_close = False
 
+    thread1 = threading.Thread(target=main_loop, args=(arduino, root, macro_display), daemon=True)
+    thread1.start()
+    
     # Start GUI thread (main)
     root.mainloop()
 # end main
@@ -100,7 +100,7 @@ def init_gui() -> MacroDisplay:
     else:
         posX = int(root.winfo_screenwidth() / 2)
         posY = int(root.winfo_screenheight() / 2)
-    root.geometry(f"456x300+{posX}+{posY}")
+    root.geometry(f"475x300+{posX}+{posY}")
     return macro_display
 # end init_gui
 
@@ -128,10 +128,7 @@ def main_loop(arduino, root, macro_display):
     
         if data.startswith("valstr:"):
             pos = int(data.split(":")[1].strip())
-            status = VAL_STRINGS[pos - 1 ]
-            if len(status) >= 12:
-                status = status[:12]
-            macro_display.update_status(status, pos)
+            macro_display.update_status(pos, True)
                 
             
         if data.startswith("log:"):

@@ -52,7 +52,7 @@ MACRO_ITEMS = {
     "VAL": [
         {
             "pos": 1,
-            "text": "last quote"
+            "text": "Last Quote"
         },
         {
             "pos": 2,
@@ -60,7 +60,7 @@ MACRO_ITEMS = {
         },
         {
             "pos": 3,
-            "text": "next quote"
+            "text": "Next Quote"
         },
         {
             "pos": 4,

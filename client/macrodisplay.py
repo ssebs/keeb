@@ -2,7 +2,7 @@
 # macrodisplay.py  - display what the macros actually are on a component
 from tkinter import *
 from tkinter import ttk
-from util import MACRO_ITEMS
+from util import MACRO_ITEMS, VAL_STRINGS
 
 
 class MacroDisplay(ttk.Frame):
@@ -21,12 +21,15 @@ class MacroDisplay(ttk.Frame):
         Constructor
         """
         super().__init__(container, **options)
+        self.truncate_length = 30
         self.container = container
         self.mode = StringVar(value=mode)
         self.status = StringVar(value="Status...")
+        self.next_txt = StringVar(value="Next Quote")
+        self.last_txt = StringVar(value="Last Quote")
 
         s = ttk.Style()
-        s.configure('.', font=('Ubuntu-Mono', 16), relief='flat')
+        s.configure('.', font=('Ubuntu-Mono', 16), relief='flat', foreground='#aaaaaa', background='#444444')
 
         self.grid(row=4, column=3)
         self.size = {"x": 3, "y": 4}
@@ -53,18 +56,36 @@ class MacroDisplay(ttk.Frame):
             print(f"Updating mode! {modeTxt}")
     # end update_mode
 
-    def update_status(self, statusTxt: str, position: int, verbose: bool = False):
+    def update_status(self, position: int, verbose: bool = False):
         """
         Updates the status text
         Params:
-            statusTxt - str the name of the mode (e.g. NUMPAD, VAL, HELPER)
             position - int valstrings position
             verbose - bool [False] add verbosity
         """
-        if self.status.get() != statusTxt:
-            self.status.set(statusTxt)
+        # Check for dupe status (VAL, HELPER, etc)
+        if self.status.get() != VAL_STRINGS[position]:
+
+            if len(VAL_STRINGS[position]) >= self.truncate_length:
+                self.status.set(VAL_STRINGS[position][:self.truncate_length])
+            else:
+                self.status.set(VAL_STRINGS[position])
+
+            next_pos = position + 1 if position < len(VAL_STRINGS)  else 0
+            last_pos = position - 1 if position > 0 else -1
             if verbose:
-                print(f"Updating status! {statusTxt}")
+                print(f"Pos: {position}")
+                print(f"Next Pos: {next_pos}")
+                print(f"Last Pos: {last_pos}")
+
+            if self.next_txt.get() != VAL_STRINGS[position]:
+                self.next_txt.set(VAL_STRINGS[next_pos])
+
+            if self.last_txt.get() != VAL_STRINGS[position]:
+                self.last_txt.set(VAL_STRINGS[last_pos])
+
+            if verbose:
+                print(f"Updating status! {VAL_STRINGS[position]}")
         else:
             if verbose:
                 print("No change needed to status")
@@ -86,11 +107,18 @@ class MacroDisplay(ttk.Frame):
         for item in MACRO_ITEMS[self.mode.get()]:
             if verbose:
                 print(f"{item['text']} - r: {r}, c: {c}")
+
             # plus 1 b/c we're starting on 1,1
-            grid[item["pos"]] = ttk.Button(self.container, text=item["text"])
+            # If in certain col, make variable text, otherwise grab default
+            if item["text"] == self.next_txt.get():
+                grid[item["pos"]] = ttk.Label(self.container, textvariable=self.next_txt, width=12)
+            elif item["text"] == self.last_txt.get():
+                grid[item["pos"]] = ttk.Label(self.container, textvariable=self.last_txt, width=12)
+            else:
+                grid[item["pos"]] = ttk.Label(self.container, text=item["text"], width=12)
+            
             grid[item["pos"]].grid(
                 row=r, column=c, ipadx=0, ipady=15, padx=5, pady=10)
-            grid[item["pos"]].state(["disabled"])
 
             # Increment
             if item["pos"] % 3 == 0:
