@@ -16,7 +16,7 @@ from macrodisplay import MacroDisplay
 from tkinter import Tk
 
 DEBUG = False
-SECOND_MONITOR = True
+SECOND_MONITOR = False
 ICON_PATH = 'bell.ico'
 SFX_PATH = 'snap.mp3'
 SERIAL_QRY = "USB Serial Device"

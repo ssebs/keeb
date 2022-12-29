@@ -47,3 +47,6 @@ A python GUI that shows what mode you're in and what the buttons do. Data is sou
 - [ ] Add log output in GUI
 - [ ] Cleanup GUI
 - [ ] current val string display
+- [ ] Optimize
+  - [ ] Seems to increase memory when device is connected, maybe saving too much data or something?
+  - [ ] Rework init grid

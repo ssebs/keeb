@@ -21,7 +21,7 @@ class MacroDisplay(ttk.Frame):
         Constructor
         """
         super().__init__(container, **options)
-        self.truncate_length = 30
+        self.truncate_length = 28
         self.container = container
         self.mode = StringVar(value=mode)
         self.status = StringVar(value="Status...")
@@ -67,22 +67,23 @@ class MacroDisplay(ttk.Frame):
         # Check for dupe status (VAL, HELPER, etc)
         if self.status.get() != VAL_STRINGS[position]:
 
+            # Trim the string
             if len(VAL_STRINGS[position]) >= self.truncate_length:
                 self.status.set(VAL_STRINGS[position][:self.truncate_length])
             else:
                 self.status.set(VAL_STRINGS[position])
 
-            next_pos = position + 1 if position < len(VAL_STRINGS)  else 0
+            next_pos = position + 1 if position < len(VAL_STRINGS) - 1  else 0
             last_pos = position - 1 if position > 0 else -1
             if verbose:
                 print(f"Pos: {position}")
                 print(f"Next Pos: {next_pos}")
                 print(f"Last Pos: {last_pos}")
 
-            if self.next_txt.get() != VAL_STRINGS[position]:
+            if self.next_txt.get() != VAL_STRINGS[next_pos]:
                 self.next_txt.set(VAL_STRINGS[next_pos])
 
-            if self.last_txt.get() != VAL_STRINGS[position]:
+            if self.last_txt.get() != VAL_STRINGS[last_pos]:
                 self.last_txt.set(VAL_STRINGS[last_pos])
 
             if verbose:
