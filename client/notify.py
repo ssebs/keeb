@@ -124,12 +124,11 @@ def main_loop(arduino, root, macro_display):
         if data.startswith("mode:"):
             mode = int(data.split(":")[1].strip())
             macro_display.update_mode(switchMode(mode).name, verbose=True)
-            playsound(resource_path(SFX_PATH), False)
+            playsound(resource_path(SFX_PATH), block=False)
     
         if data.startswith("valstr:"):
             pos = int(data.split(":")[1].strip())
-            macro_display.update_status(pos, True)
-                
+            macro_display.update_status(pos)
             
         if data.startswith("log:"):
             print(data)

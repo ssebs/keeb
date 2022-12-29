@@ -65,7 +65,7 @@ class MacroDisplay(ttk.Frame):
             verbose - bool [False] add verbosity
         """
         # Check for dupe status (VAL, HELPER, etc)
-        if self.status.get() != VAL_STRINGS[position]:
+        if self.status.get() not in VAL_STRINGS[position]:
 
             # Trim the string
             if len(VAL_STRINGS[position]) >= self.truncate_length:
@@ -73,6 +73,7 @@ class MacroDisplay(ttk.Frame):
             else:
                 self.status.set(VAL_STRINGS[position])
 
+            # Get correct position of last and next item
             next_pos = position + 1 if position < len(VAL_STRINGS) - 1  else 0
             last_pos = position - 1 if position > 0 else -1
             if verbose:
@@ -80,12 +81,13 @@ class MacroDisplay(ttk.Frame):
                 print(f"Next Pos: {next_pos}")
                 print(f"Last Pos: {last_pos}")
 
-            if self.next_txt.get() != VAL_STRINGS[next_pos]:
+            # Update textboxes if not already set
+            if self.next_txt.get() not in VAL_STRINGS[next_pos]:
                 self.next_txt.set(VAL_STRINGS[next_pos])
-
-            if self.last_txt.get() != VAL_STRINGS[last_pos]:
+      
+            if self.last_txt.get() not in VAL_STRINGS[last_pos]:
                 self.last_txt.set(VAL_STRINGS[last_pos])
-
+      
             if verbose:
                 print(f"Updating status - {VAL_STRINGS[position]}")
         else:
