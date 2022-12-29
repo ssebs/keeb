@@ -23,7 +23,8 @@ class MacroDisplay(ttk.Frame):
         super().__init__(container, **options)
         self.container = container
         self.mode = StringVar(value=mode)
-        
+        self.status = StringVar(value="Status...")
+
         s = ttk.Style()
         s.configure('.', font=('Ubuntu-Mono', 16), relief='flat')
 
@@ -33,6 +34,9 @@ class MacroDisplay(ttk.Frame):
         self.macrogrid = self._init_grid()
         self.lbl = ttk.Label(self.container, textvariable=self.mode)
         self.lbl.grid(row=0, column=0, padx=5, pady=10)
+
+        self.status_lbl = ttk.Label(self.container, textvariable=self.status)
+        self.status_lbl.grid(row=0, column=1, columnspan=2, padx=5, pady=10)
     # end __init__
 
     def update_mode(self, modeTxt: str, verbose: bool = False):
@@ -49,7 +53,26 @@ class MacroDisplay(ttk.Frame):
             print(f"Updating mode! {modeTxt}")
     # end update_mode
 
+    def update_status(self, statusTxt: str, position: int, verbose: bool = False):
+        """
+        Updates the status text
+        Params:
+            statusTxt - str the name of the mode (e.g. NUMPAD, VAL, HELPER)
+            position - int valstrings position
+            verbose - bool [False] add verbosity
+        """
+        if self.status.get() != statusTxt:
+            self.status.set(statusTxt)
+            if verbose:
+                print(f"Updating status! {statusTxt}")
+        else:
+            if verbose:
+                print("No change needed to status")
+
+    # end update_status
+
     def _init_grid(self, verbose: bool = False) -> dict:
+        # TODO add option for val strings
         """
         Initializes the grid using self.mode's value cross referenced with MACRO_ITEMS' items
         Params:
@@ -65,7 +88,8 @@ class MacroDisplay(ttk.Frame):
                 print(f"{item['text']} - r: {r}, c: {c}")
             # plus 1 b/c we're starting on 1,1
             grid[item["pos"]] = ttk.Button(self.container, text=item["text"])
-            grid[item["pos"]].grid(row=r, column=c, ipadx=0, ipady=15, padx=5, pady=10)
+            grid[item["pos"]].grid(
+                row=r, column=c, ipadx=0, ipady=15, padx=5, pady=10)
             grid[item["pos"]].state(["disabled"])
 
             # Increment

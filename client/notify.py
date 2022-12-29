@@ -11,7 +11,7 @@ import serial
 import serial.tools.list_ports
 from playsound import playsound
 
-from util import switchMode, MACRO_ITEMS
+from util import switchMode, MACRO_ITEMS, VAL_STRINGS
 from macrodisplay import MacroDisplay
 from tkinter import Tk
 
@@ -125,7 +125,15 @@ def main_loop(arduino, root, macro_display):
             mode = int(data.split(":")[1].strip())
             macro_display.update_mode(switchMode(mode).name, verbose=True)
             playsound(resource_path(SFX_PATH), False)
-
+    
+        if data.startswith("valstr:"):
+            pos = int(data.split(":")[1].strip())
+            status = VAL_STRINGS[pos - 1 ]
+            if len(status) >= 12:
+                status = status[:12]
+            macro_display.update_status(status, pos)
+                
+            
         if data.startswith("log:"):
             print(data)
         

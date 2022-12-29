@@ -163,6 +163,18 @@ MACRO_ITEMS = {
             "text": "9"
         },
     ]
-
-
 }
+
+VAL_STRINGS = [
+    "Sheeeeeeeeeeeeeeeeeeeeeeeeesh",
+    "You were a boulder. I am a mountain!",
+    "How did every piece of trash end up on the same team?",
+    "Just some good old hard yakka, standing in between us and victory.",
+    "Oi! I'm pissed!",
+    "Bloinded",
+    "I am on a higher plane, chale, literally!",
+    "Activating kill mode. That's a joke. Kill mode is default.",
+    "Buy stuff, kaching, lil' skkkrrrr, then we're done, yeah?",
+    "Yo!    Nice.",
+    "Sheee-achoo!-eeesh!",
+]
