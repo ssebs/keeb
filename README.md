@@ -46,3 +46,4 @@ A python GUI that shows what mode you're in and what the buttons do. Data is sou
 - [ ] OOP
 - [ ] Add log output in GUI
 - [ ] Cleanup GUI
+- [ ] current val string display

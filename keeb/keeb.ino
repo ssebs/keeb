@@ -45,7 +45,7 @@ static uint8_t currentRow = 0;
 static uint8_t currentCol;  // for column loop counters
 static uint8_t currentMode;
 static char pressedKey;
-static uint8_t valStrPos = 11;
+uint8_t valStrPos = 11;
 // static uint8_t valPUStrPos = 0;
 
 bool lightOn = false;
@@ -118,6 +118,9 @@ void loop() {
     lastMillis = millis();  //get ready for the next iteration
     Serial.print("secmode:");
     Serial.println(currentMode);
+    
+    Serial.print("valstr:");
+    Serial.println(valStrPos);
   }
 
   // sendRandomString(valStrings, sizeof(valStrings) / sizeof(valStrings[0]));
@@ -137,7 +140,7 @@ void handleHelper(bool isDown) {
         Keyboard.println("gg");
         break;
       case '2':
-        sendRandomString(valPickupStrings, sizeof(valPickupStrings) / sizeof(valPickupStrings[0]));
+        _sendValString(getRandomString(valPickupStrings, sizeof(valPickupStrings) / sizeof(valPickupStrings[0])));
         break;
       case '3':
         sendOpenIncognito();
@@ -179,7 +182,7 @@ void handleVal(bool isDown) {
         _sendValString(valStrings[valStrPos]);
         break;
       case '2':
-        sendRandomString(valPickupStrings, sizeof(valPickupStrings) / sizeof(valPickupStrings[0]));
+        _sendValString(getRandomString(valPickupStrings, sizeof(valPickupStrings) / sizeof(valPickupStrings[0])));
         break;
       case '3':
         // Count valStrPos up 1 or reset
@@ -288,11 +291,10 @@ void _sendValString(const char *str) {
   // sendRandomString(valStrings, sizeof(valStrings) / sizeof(valStrings[0]));
 }
 
-void sendRandomString(const char **strings, int numStrings) {
+const char *getRandomString(const char **strings, int numStrings) {
   // int idx = random(numStrings);
   int idx = random(numStrings);
-  Keyboard.println(strings[idx]);  // random str
-  delay(500);
+  return strings[idx];  // random str
 }
 
 void sendShutdown() {
