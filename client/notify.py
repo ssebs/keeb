@@ -143,7 +143,7 @@ def main_loop(arduino, root, macro_display):
 
         if data.startswith("mode:"):
             mode = int(data.split(":")[1].strip())
-            macro_display.update_mode(switchMode(mode).name, verbose=True)
+            macro_display.update_mode(switchMode(mode).name, verbose=False)
             playsound(resource_path(SFX_PATH), block=False)
 
         if data.startswith("valstr:"):

@@ -15,6 +15,9 @@ class MacroDisplay(ttk.Frame):
     Methods:
         update_mode - update the mode and rebuild grid with new data. Cross references MACRO_ITEMS
     """
+    STATUS_DEFAULT_TXT = "Status..."
+    NEXT_QUOTE_DEFAULT_TXT = "Next Quote"
+    LAST_QUOTE_DEFAULT_TXT = "Last Quote"
 
     def __init__(self, container: Tk, mode: str, **options):
         """
@@ -24,12 +27,9 @@ class MacroDisplay(ttk.Frame):
         self.truncate_length = 28
         self.container = container
         self.mode = StringVar(value=mode)
-        self.status = StringVar(value="Status...")
-        self.next_txt = StringVar(value="Next Quote")
-        self.last_txt = StringVar(value="Last Quote")
-
-        # s = ttk.Style()
-        # s.configure('.', font=('Ubuntu-Mono', 16), relief='flat', foreground='#aaaaaa', background='#444444')
+        self.status = StringVar(value=MacroDisplay.STATUS_DEFAULT_TXT)
+        self.next_txt = StringVar(value=MacroDisplay.NEXT_QUOTE_DEFAULT_TXT)
+        self.last_txt = StringVar(value=MacroDisplay.LAST_QUOTE_DEFAULT_TXT)
 
         self.grid(row=4, column=3)
         self.size = {"x": 3, "y": 4}
@@ -115,9 +115,9 @@ class MacroDisplay(ttk.Frame):
 
             # plus 1 b/c we're starting on 1,1
             # If in certain col, make variable text, otherwise grab default
-            if item["text"] == self.next_txt.get():
+            if item["text"] == self.next_txt.get() or item["text"] == MacroDisplay.NEXT_QUOTE_DEFAULT_TXT:
                 grid[item["pos"]] = ttk.Label(self.container, textvariable=self.next_txt, width=12)
-            elif item["text"] == self.last_txt.get():
+            elif item["text"] == self.last_txt.get() or item["text"] == MacroDisplay.LAST_QUOTE_DEFAULT_TXT:
                 grid[item["pos"]] = ttk.Label(self.container, textvariable=self.last_txt, width=12)
             else:
                 grid[item["pos"]] = ttk.Label(self.container, text=item["text"], width=12)
