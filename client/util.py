@@ -52,15 +52,15 @@ MACRO_ITEMS = {
     "VAL": [
         {
             "pos": 1,
-            "text": "Last Quote"
+            "text": "Last Quote <="
         },
         {
             "pos": 2,
-            "text": "Val Pickup Line"
+            "text": "Pickup Line ;)"
         },
         {
             "pos": 3,
-            "text": "Next Quote"
+            "text": "Next Quote =>"
         },
         {
             "pos": 4,
