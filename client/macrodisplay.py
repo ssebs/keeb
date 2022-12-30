@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # macrodisplay.py  - display what the macros actually are on a component
-from tkinter import *
+from tkinter import StringVar, Tk
 from tkinter import ttk
 from util import MACRO_ITEMS, VAL_STRINGS
 
@@ -28,8 +28,8 @@ class MacroDisplay(ttk.Frame):
         self.next_txt = StringVar(value="Next Quote")
         self.last_txt = StringVar(value="Last Quote")
 
-        s = ttk.Style()
-        s.configure('.', font=('Ubuntu-Mono', 16), relief='flat', foreground='#aaaaaa', background='#444444')
+        # s = ttk.Style()
+        # s.configure('.', font=('Ubuntu-Mono', 16), relief='flat', foreground='#aaaaaa', background='#444444')
 
         self.grid(row=4, column=3)
         self.size = {"x": 3, "y": 4}

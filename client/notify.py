@@ -13,7 +13,7 @@ from playsound import playsound
 
 from util import switchMode, MACRO_ITEMS, VAL_STRINGS
 from macrodisplay import MacroDisplay
-from tkinter import Tk
+from tkinter import Tk, ttk, messagebox
 
 DEBUG = False
 SECOND_MONITOR = False
@@ -21,9 +21,11 @@ ICON_PATH = 'bell.ico'
 SFX_PATH = 'snap.mp3'
 SERIAL_QRY = "USB Serial Device"
 
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)) + "\\res")
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(
+        os.path.abspath(__file__)) + "\\res")
     return os.path.join(base_path, relative_path)
 
 
@@ -34,26 +36,34 @@ def main():
     """
     if DEBUG:
         print("Client for macro pad")
-    
+
     try:
         arduino = init_arduino()
-        macro_display = init_gui() # sets global root, returns MacroDisplay
+        macro_display = init_gui()  # sets global root, returns MacroDisplay
+    except serial.SerialException as e:
+        print(e)
+        messagebox.showerror(title="Keeb - Serial Exception",
+                             message=f"{str(e)}\n\nCheck if you have another instance open?")
+        exit(0)
     except Exception as e:
         print(e)
+        raise e
         sys.exit(1)
 
     # Setup Serial comm thread
-    global thread1 
+    global thread1
     # For the close icon in the GUI, stop the thread too
     global do_close
     do_close = False
 
-    thread1 = threading.Thread(target=main_loop, args=(arduino, root, macro_display), daemon=True)
+    thread1 = threading.Thread(target=main_loop, args=(
+        arduino, root, macro_display), daemon=True)
     thread1.start()
-    
+
     # Start GUI thread (main)
     root.mainloop()
 # end main
+
 
 def init_arduino() -> serial.Serial:
     """
@@ -63,17 +73,18 @@ def init_arduino() -> serial.Serial:
     """
     # what my PC says the teensy LC is called, could use COM7 but that could change
     signal.signal(signal.SIGINT, signal.default_int_handler)
-    serial_port = load_port(SERIAL_QRY, False) 
+    serial_port = load_port(SERIAL_QRY, False)
 
     if serial_port is None:
         raise Exception(f"Failed to load serial qry: {SERIAL_QRY}")
-        
+
     arduino = serial.Serial(port=serial_port, baudrate=9600,  timeout=1.2)
     if arduino is None:
         raise Exception(f"Failed to mount Serial port: {SERIAL_QRY}")
 
     return arduino
 # end init_arduino
+
 
 def init_gui() -> MacroDisplay:
     """
@@ -83,8 +94,16 @@ def init_gui() -> MacroDisplay:
     """
     global root
     root = Tk()
-    macro_display = MacroDisplay(root, "MODE")
-    
+    s = ttk.Style()
+    s.configure('.', font=('Ubuntu-Mono', 16), relief='flat',
+                foreground='#cccccc', background='#252525')
+    s.configure('TFrame', foreground='#ffffff', background='#222222')
+
+    main_frame = ttk.Frame(root)
+    main_frame.pack()
+
+    macro_display = MacroDisplay(main_frame, "MODE")
+
     root.protocol("WM_DELETE_WINDOW", handle_close)
     root.iconbitmap(resource_path(ICON_PATH))
     root.resizable(False, False)
@@ -100,9 +119,10 @@ def init_gui() -> MacroDisplay:
     else:
         posX = int(root.winfo_screenwidth() / 2)
         posY = int(root.winfo_screenheight() / 2)
-    root.geometry(f"475x300+{posX}+{posY}")
+    root.geometry(f"475x280+{posX}+{posY}")
     return macro_display
 # end init_gui
+
 
 def main_loop(arduino, root, macro_display):
     """
@@ -125,19 +145,20 @@ def main_loop(arduino, root, macro_display):
             mode = int(data.split(":")[1].strip())
             macro_display.update_mode(switchMode(mode).name, verbose=True)
             playsound(resource_path(SFX_PATH), block=False)
-    
+
         if data.startswith("valstr:"):
             pos = int(data.split(":")[1].strip())
             macro_display.update_status(pos)
-            
+
         if data.startswith("log:"):
             print(data)
-        
+
         # If X GUI btn was pressed, stop this thread
         if do_close:
             break
     # end loop
 # end main_loop
+
 
 def load_port(name: str, is_COM_name: bool = True) -> str:
     """
@@ -178,6 +199,7 @@ def handle_close():
         sys.exit(0)
     # stop thread1
 # end handle_close
+
 
 if __name__ == "__main__":
     main()

@@ -50,3 +50,4 @@ A python GUI that shows what mode you're in and what the buttons do. Data is sou
 - [ ] Optimize
   - [ ] Seems to increase memory when device is connected, maybe saving too much data or something?
   - [ ] Rework init grid
+  - [ ] Handle disconnection and reconnection
