@@ -46,7 +46,7 @@ static uint8_t currentCol;  // for column loop counters
 static uint8_t currentMode;
 static char pressedKey;
 uint8_t valStrPos = 11;
-// static uint8_t valPUStrPos = 0;
+uint8_t valPUStrPos = 0;
 
 bool lightOn = false;
 
@@ -118,7 +118,7 @@ void loop() {
     lastMillis = millis();  //get ready for the next iteration
     Serial.print("secmode:");
     Serial.println(currentMode);
-    
+
     Serial.print("valstr:");
     Serial.println(valStrPos);
   }
@@ -182,7 +182,12 @@ void handleVal(bool isDown) {
         _sendValString(valStrings[valStrPos]);
         break;
       case '2':
-        _sendValString(getRandomString(valPickupStrings, sizeof(valPickupStrings) / sizeof(valPickupStrings[0])));
+        if (valPUStrPos > 0) {
+          valPUStrPos -= 1;
+        } else {
+          valPUStrPos = sizeof(valPickupStrings) / sizeof(valPickupStrings[0]);
+        }
+        _sendValString(valPickupStrings[valPUStrPos]);
         break;
       case '3':
         // Count valStrPos up 1 or reset

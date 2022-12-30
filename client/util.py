@@ -56,7 +56,7 @@ MACRO_ITEMS = {
         },
         {
             "pos": 2,
-            "text": "random quote"
+            "text": "Val Pickup Line"
         },
         {
             "pos": 3,
