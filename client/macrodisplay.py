@@ -16,8 +16,8 @@ class MacroDisplay(ttk.Frame):
         update_mode - update the mode and rebuild grid with new data. Cross references MACRO_ITEMS
     """
     STATUS_DEFAULT_TXT = "Status..."
-    NEXT_QUOTE_DEFAULT_TXT = "Next Quote"
-    LAST_QUOTE_DEFAULT_TXT = "Last Quote"
+    LAST_QUOTE_DEFAULT_TXT = "Last Quote <="
+    NEXT_QUOTE_DEFAULT_TXT = "Next Quote =>"
 
     def __init__(self, container: Tk, mode: str, **options):
         """
