@@ -160,7 +160,7 @@ void handleHelper(bool isDown) {
         Keyboard.releaseAll();
         break;
       case '7':
-        _sendValString("Hey how about you go touch a fern, hey bud?", true);
+        _sendValString("Hey how about you go touch a fern, eh bud?", true);
         break;
       case '8':
         _sendValString("To become a better person, touch grass, one must.  Hmmmm?", true);

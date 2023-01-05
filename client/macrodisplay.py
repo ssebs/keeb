@@ -65,9 +65,9 @@ class MacroDisplay(ttk.Frame):
             verbose - bool [False] add verbosity
         """
         # Check for dupe status (VAL, HELPER, etc)
-        if position > len(VAL_STRINGS):
+        if position >= len(VAL_STRINGS):
             print(f"POS too big")
-            return
+            position -= 1
         if self.status.get() not in VAL_STRINGS[position]:
 
             # Trim the string
@@ -119,8 +119,8 @@ class MacroDisplay(ttk.Frame):
             # plus 1 b/c we're starting on 1,1
             # If in certain col, make variable text, otherwise grab default
             if item["text"] == self.next_txt.get() or item["text"] == MacroDisplay.NEXT_QUOTE_DEFAULT_TXT:
-                grid[item["pos"]] = MyLabel(self.container, textvariable=self.next_txt, width=12, borderwidth=2, color='red')
-                # grid[item["pos"]] = ttk.Label(self.container, textvariable=self.next_txt, width=12, highlightthickness=4, highlightbackground="red")
+                # grid[item["pos"]] = MyLabel(self.container, textvariable=self.next_txt, width=12, borderwidth=2, color='red')
+                grid[item["pos"]] = ttk.Label(self.container, textvariable=self.next_txt, width=12)
             elif item["text"] == self.last_txt.get() or item["text"] == MacroDisplay.LAST_QUOTE_DEFAULT_TXT:
                 grid[item["pos"]] = ttk.Label(self.container, textvariable=self.last_txt, width=12)
             else:
