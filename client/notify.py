@@ -11,7 +11,9 @@ import serial
 import serial.tools.list_ports
 from playsound import playsound
 
-from util import switchMode, MACRO_ITEMS, VAL_STRINGS
+from util import (
+    switchMode, MACRO_ITEMS, VAL_STRINGS, SerialNotFoundException, SerialMountException, CustomSerialException
+)
 from macrodisplay import MacroDisplay
 from tkinter import Tk, ttk, messagebox
 
@@ -45,6 +47,11 @@ def main():
         messagebox.showerror(title="Keeb - Serial Exception",
                              message=f"{str(e)}\n\nCheck if you have another instance open?")
         exit(0)
+    except CustomSerialException as e:
+        print(e)
+        messagebox.showerror(title="Keeb - Serial Exception",
+                             message=f"{str(e)}\n\nIs the arduino plugged in?")
+        exit(0)
     except Exception as e:
         print(e)
         raise e
@@ -76,11 +83,13 @@ def init_arduino() -> serial.Serial:
     serial_port = load_port(SERIAL_QRY, False)
 
     if serial_port is None:
-        raise Exception(f"Failed to load serial qry: {SERIAL_QRY}")
+        raise SerialNotFoundException(
+            f"Failed to load serial port: {SERIAL_QRY}")
 
     arduino = serial.Serial(port=serial_port, baudrate=9600,  timeout=1.2)
     if arduino is None:
-        raise Exception(f"Failed to mount Serial port: {SERIAL_QRY}")
+        raise SerialMountException(
+            f"Failed to mount Serial port: {SERIAL_QRY}")
 
     return arduino
 # end init_arduino

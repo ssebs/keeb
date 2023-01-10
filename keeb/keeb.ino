@@ -46,7 +46,7 @@ static uint8_t currentCol;  // for column loop counters
 static uint8_t currentMode;
 static char pressedKey;
 uint8_t valStrPos = 11;
-uint8_t valPUStrPos = 0;
+uint8_t valPUStrPos = 5;
 
 bool lightOn = false;
 

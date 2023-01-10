@@ -180,6 +180,15 @@ VAL_STRINGS = [
     "Sheee-achoo!-eeesh!",
 ]
 
+class CustomSerialException(Exception):
+    pass
+
+class SerialNotFoundException(CustomSerialException):
+    pass
+
+class SerialMountException(CustomSerialException):
+    pass
+
 class MyLabel(ttk.Frame):
     '''inherit from Frame to make a label with customized border'''
     def __init__(self, parent, myborderwidth=0, color=None,
