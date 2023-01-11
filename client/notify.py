@@ -17,11 +17,13 @@ from util import (
 from macrodisplay import MacroDisplay
 from tkinter import Tk, ttk, messagebox
 
+RETRY_COUNT = 5
 DEBUG = False
 SECOND_MONITOR = False
 ICON_PATH = 'bell.ico'
 SFX_PATH = 'snap.mp3'
 SERIAL_QRY = "USB Serial Device"
+MSGBOX_TITLE = "Keeb - Serial Exception"
 
 
 def resource_path(relative_path):
@@ -39,37 +41,57 @@ def main():
     if DEBUG:
         print("Client for macro pad")
 
-    try:
-        arduino = init_arduino()
-        macro_display = init_gui()  # sets global root, returns MacroDisplay
-    except serial.SerialException as e:
-        print(e)
-        messagebox.showerror(title="Keeb - Serial Exception",
-                             message=f"{str(e)}\n\nCheck if you have another instance open?")
-        exit(0)
-    except CustomSerialException as e:
-        print(e)
-        messagebox.showerror(title="Keeb - Serial Exception",
-                             message=f"{str(e)}\n\nIs the arduino plugged in?")
-        exit(0)
-    except Exception as e:
-        print(e)
-        raise e
-        sys.exit(1)
 
+    global arduino 
+    global macro_display 
+
+    arduino, macro_display = init()
+    
     # Setup Serial comm thread
     global thread1
     # For the close icon in the GUI, stop the thread too
     global do_close
     do_close = False
-
+    
     thread1 = threading.Thread(target=main_loop, args=(
         arduino, root, macro_display), daemon=True)
     thread1.start()
 
     # Start GUI thread (main)
     root.mainloop()
+    if do_restart:
+        print("Doing restart")
+        print(thread1.is_alive())
+        # main()
+        arduino = init_arduino()
 # end main
+
+def init() -> tuple:
+    # TODO: Cleanup
+    for tries in range(RETRY_COUNT):
+        try:
+            arduino = init_arduino()
+            macro_display = init_gui()  # sets global root, returns MacroDisplay
+        except serial.SerialException as e:
+            print(e)
+            messagebox.showerror(title=MSGBOX_TITLE,
+                                message=f"{str(e)}\n\nCheck if you have another instance open?")
+            exit(0)
+        except CustomSerialException as e:
+            print(e)
+            do_try_again = messagebox.askyesno(title=MSGBOX_TITLE,
+                                message=f"{str(e)}\n\nWant to try loading again?")
+            if do_try_again:
+                continue
+            else:
+                exit(0)
+        except Exception as e:
+            print(e)
+            raise e
+            sys.exit(1)
+        # break if trying succeeds
+        break
+    return (arduino, macro_display)
 
 
 def init_arduino() -> serial.Serial:
@@ -137,8 +159,17 @@ def main_loop(arduino, root, macro_display):
     """
     Thread that handles serial comms and updates the GUI
     """
+    # To restart the program
+    global do_restart
+    do_restart = False
     while True:
-        data = str(arduino.readline().decode())
+        try:
+            data = str(arduino.readline().decode())
+        except serial.SerialException as e:
+            print(e)
+            do_restart = True
+            break;
+            
         if data != "" and DEBUG:
             print(data)
 
@@ -166,6 +197,8 @@ def main_loop(arduino, root, macro_display):
         if do_close:
             break
     # end loop
+    if do_restart:
+        root.destroy()
 # end main_loop
 
 
