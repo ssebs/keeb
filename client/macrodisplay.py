@@ -66,7 +66,8 @@ class MacroDisplay(ttk.Frame):
         """
         # Check for dupe status (VAL, HELPER, etc)
         if position >= len(VAL_STRINGS):
-            print(f"POS too big")
+            if verbose:
+                print(f"POS too big")
             position -= 1
         if self.status.get() not in VAL_STRINGS[position]:
 

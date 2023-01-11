@@ -19,9 +19,11 @@ from tkinter import Tk, ttk, messagebox
 
 DEBUG = False
 SECOND_MONITOR = False
+RETRY_COUNT = 5
 ICON_PATH = 'bell.ico'
 SFX_PATH = 'snap.mp3'
 SERIAL_QRY = "USB Serial Device"
+MSGBOX_TITLE = "Keeb - Serial Exception"
 
 
 def resource_path(relative_path):
@@ -38,24 +40,32 @@ def main():
     """
     if DEBUG:
         print("Client for macro pad")
-
-    try:
-        arduino = init_arduino()
-        macro_display = init_gui()  # sets global root, returns MacroDisplay
-    except serial.SerialException as e:
-        print(e)
-        messagebox.showerror(title="Keeb - Serial Exception",
-                             message=f"{str(e)}\n\nCheck if you have another instance open?")
-        exit(0)
-    except CustomSerialException as e:
-        print(e)
-        messagebox.showerror(title="Keeb - Serial Exception",
-                             message=f"{str(e)}\n\nIs the arduino plugged in?")
-        exit(0)
-    except Exception as e:
-        print(e)
-        raise e
-        sys.exit(1)
+    for tries in range(RETRY_COUNT):
+        try:
+            arduino = init_arduino()
+            macro_display = init_gui()  # sets global root, returns MacroDisplay
+        except serial.SerialException as e:
+            print(e)
+            messagebox.showerror(title="Keeb - Serial Exception",
+                                message=f"{str(e)}\n\nCheck if you have another instance open?")
+            exit(0)
+        except CustomSerialException as e:
+            print(e)
+            # messagebox.showerror(title="Keeb - Serial Exception",
+                                # message=f"{str(e)}\n\nIs the arduino plugged in?")
+            do_try_again = messagebox.askyesno(title=MSGBOX_TITLE,
+                                            message=f"{str(e)}\n\nWant to try loading again?")
+            if do_try_again:
+                continue
+            else:
+                exit(0)
+            exit(0)
+        except Exception as e:
+            print(e)
+            raise e
+            sys.exit(1)
+        # break if trying succeeds
+        break
 
     # Setup Serial comm thread
     global thread1
