@@ -91,7 +91,7 @@ MACRO_ITEMS = {
     "HELPER": [
         {
             "pos": 1,
-            "text": "gg"
+            "text": "cqe spam"
         },
         {
             "pos": 2,

@@ -133,7 +133,12 @@ void handleHelper(bool isDown) {
 
     switch (pressedKey) {
       case '1':
-        _sendValString("gg", true);
+        Keyboard.print('c');
+        delay(50);
+        Keyboard.print('q');
+        delay(50);
+        Keyboard.print('e');
+        delay(50);
         break;
       case '2':
         _sendValString(getRandomString(valPickupStrings, sizeof(valPickupStrings) / sizeof(valPickupStrings[0])), true);
