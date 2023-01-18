@@ -48,7 +48,7 @@ def main():
             print(e)
             messagebox.showerror(title="Keeb - Serial Exception",
                                 message=f"{str(e)}\n\nCheck if you have another instance open?")
-            exit(0)
+            sys.exit(0)
         except CustomSerialException as e:
             print(e)
             # messagebox.showerror(title="Keeb - Serial Exception",
@@ -58,8 +58,8 @@ def main():
             if do_try_again:
                 continue
             else:
-                exit(0)
-            exit(0)
+                sys.exit(0)
+            sys.exit(0)
         except Exception as e:
             print(e)
             raise e

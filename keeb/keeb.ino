@@ -133,13 +133,24 @@ void handleHelper(bool isDown) {
 
     switch (pressedKey) {
       case '1':
-        Keyboard.print('c');
-        delay(50);
-        Keyboard.print('q');
-        delay(50);
-        Keyboard.print('e');
-        delay(50);
-        break;
+        {
+          int _delay = 15;
+          for (int i = 0; i < 7; i++) {
+            Keyboard.print('c');
+            delay(_delay);
+            Keyboard.print('q');
+            delay(_delay);
+            Keyboard.print('e');
+            delay(_delay);
+            Keyboard.print('3');
+            delay(_delay);
+            Keyboard.print('2');
+            delay(_delay);
+            Keyboard.print('1');
+            delay(_delay);
+          }
+          break;
+        }
       case '2':
         _sendValString(getRandomString(valPickupStrings, sizeof(valPickupStrings) / sizeof(valPickupStrings[0])), true);
         break;
@@ -150,20 +161,23 @@ void handleHelper(bool isDown) {
         sendUndo();
         break;
       case '5':
-        Keyboard.press(KEY_TAB);
-        delay(500);
-        Keyboard.press('c');
-        delay(50);
-        Keyboard.press('c');
-        delay(50);
-        Keyboard.press('c');
-        delay(50);
-        Keyboard.press('c');
-        delay(100);
-        Keyboard.press('v');
-        delay(100);
-        Keyboard.releaseAll();
-        break;
+        {
+          int _delay = 15;
+          Keyboard.press(KEY_TAB);
+          delay(200);
+          Keyboard.press('c');
+          delay(_delay);
+          Keyboard.press('c');
+          delay(_delay);
+          Keyboard.press('c');
+          delay(_delay);
+          Keyboard.press('c');
+          delay(_delay);
+          Keyboard.press('v');
+          delay(_delay);
+          Keyboard.releaseAll();
+          break;
+        }
       case '7':
         _sendValString("Hey how about you go touch a fern, eh bud?", true);
         break;
